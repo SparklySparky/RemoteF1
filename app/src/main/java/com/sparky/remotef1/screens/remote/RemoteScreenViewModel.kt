@@ -114,8 +114,6 @@ class RemoteScreenViewModel: ViewModel() {
                     s = (s * slidersRange.value.rb).roundTo(3)
                 }
 
-                Log.d("Sliders", "Throttle: $t, Steering: $s")
-
                 val messageOut = MessageInfo()
 
                 val messageRaw = MessageInfo(t, s)
