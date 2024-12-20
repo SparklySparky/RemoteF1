@@ -31,6 +31,13 @@ data class MessageInfo(
     @SerializedName("s") var s: Float? = null,
 )
 
+data class SlidersRange(
+    var lf: Float = 1f,
+    var lb: Float = 1f,
+    var rf: Float = 1f,
+    var rb: Float = 1f,
+)
+
 fun Float.roundTo(places: Int): Float {
     if (places <= 0) { throw IllegalArgumentException("The number of places must be positive") }
 
@@ -47,7 +54,15 @@ class RemoteScreenViewModel: ViewModel() {
     private val _messageOld = mutableStateOf(MessageInfo())
     val messageOld: MutableState<MessageInfo> get() = _messageOld
 
+    private val _slidersRange = mutableStateOf(SlidersRange())
+    val slidersRange: MutableState<SlidersRange> get() = _slidersRange
+
     private var job: Job? = null
+
+    fun updateSlidersRange(rangeLF: Float, rangeLB: Float, rangeRF: Float, rangeRB: Float)
+    {
+        _slidersRange.value = SlidersRange(rangeLF, rangeLB, rangeRF, rangeRB)
+    }
 
     fun createSocket(ip: String, port: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -85,8 +100,21 @@ class RemoteScreenViewModel: ViewModel() {
         job?.cancel()
         job = viewModelScope.launch(Dispatchers.Default) {
             while (isActive) {
-                val t = throttleSliderValue.roundTo(2)
-                val s = steeringSliderValue.roundTo(2)
+                var t = throttleSliderValue.roundTo(3)
+                var s = steeringSliderValue.roundTo(3)
+                if(t > 0){
+                    t = (t * slidersRange.value.lf).roundTo(3)
+                } else if(t < 0){
+                    t = (t * slidersRange.value.lb).roundTo(3)
+                }
+
+                if(s > 0){
+                    s = (s * slidersRange.value.rf).roundTo(3)
+                } else if(s < 0){
+                    s = (s * slidersRange.value.rb).roundTo(3)
+                }
+
+                Log.d("Sliders", "Throttle: $t, Steering: $s")
 
                 val messageOut = MessageInfo()
 

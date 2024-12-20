@@ -22,9 +22,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import com.sparky.remotef1.ConfigContent
 import com.sparky.remotef1.R
 import com.sparky.remotef1.ui.theme.Blue
 import com.sparky.remotef1.ui.theme.Orange
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,6 +44,12 @@ fun RemoteScreen(
     LaunchedEffect(Unit) {
         remoteScreenViewModel.createSocket(ip, port)
         remoteScreenViewModel.startRepeatingJob(100)
+        remoteScreenViewModel.updateSlidersRange(
+            args.rangeLF,
+            args.rangeLB,
+            args.rangeRF,
+            args.rangeRB
+        )
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -178,5 +186,9 @@ fun RemoteScreen(
 @Serializable
 data class RemoteScreen(
     val ip: String,
-    val port: String
+    val port: String,
+    val rangeLF: Float,
+    val rangeLB: Float,
+    val rangeRF: Float,
+    val rangeRB: Float
 )

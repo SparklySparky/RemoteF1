@@ -13,11 +13,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.sparky.remotef1.screens.configs.ConfigsScreenViewModel
 import com.sparky.remotef1.screens.remote.RemoteScreenViewModel
 import com.sparky.remotef1.ui.theme.RemoteF1Theme
 
 class MainActivity : ComponentActivity() {
     private val remoteScreenViewModel = RemoteScreenViewModel();
+    private val fileManager by lazy { FileManager(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +29,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             RemoteF1Theme {
-                RemoteF1App(remoteScreenViewModel)
+                RemoteF1App(remoteScreenViewModel, fileManager)
             }
         }
     }
